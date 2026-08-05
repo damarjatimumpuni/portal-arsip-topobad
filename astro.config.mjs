@@ -16,6 +16,7 @@ export default defineConfig({
   // Perhatikan tanda koma di ujung baris bawah ini:
   integrations: [react(), markdoc(), keystatic()],
 
-  output: 'static',
-  adapter: vercel()
+  output: 'server',
+  adapter: vercel(),
+  integrations: [keystatic()],
 });
