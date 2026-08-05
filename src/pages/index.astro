@@ -1,0 +1,181 @@
+---
+import "../styles/global.css";
+import { getCollection } from "astro:content";
+
+const semuaArsip = await getCollection("arsip");
+---
+
+<!doctype html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Portal Arsip Terpadu & Administratif</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+    </head>
+    <body
+        class="bg-slate-50 text-slate-800 font-sans antialiased flex flex-col min-h-screen"
+    >
+        <nav class="bg-sky-900 text-white shadow-md">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between h-16 items-center">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-folder-tree text-2xl text-sky-100"
+                        ></i>
+                        <div>
+                            <h1 class="text-lg font-bold leading-tight">
+                                Arsip Terpadu
+                            </h1>
+                            <p class="text-xs text-sky-100">
+                                Sistem Manajemen Dokumen Internal
+                            </p>
+                        </div>
+                    </div>
+                    <div class="hidden md:flex space-x-6 items-center">
+                        <a
+                            href="/"
+                            class="text-white hover:text-sky-100 font-medium"
+                            >Beranda</a
+                        >
+                        <a
+                            href="/keystatic"
+                            class="bg-sky-700 hover:bg-sky-500 text-white px-4 py-2 rounded-md text-sm font-semibold transition-colors duration-200"
+                        >
+                            <i class="fa-solid fa-lock mr-2"></i>Login Admin
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <div class="bg-sky-700 pb-16 pt-12 relative shadow-inner">
+            <div
+                class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10"
+            >
+                <h2 class="text-3xl font-extrabold text-white mb-4">
+                    Pusat Pencarian Dokumen & Surat Resmi
+                </h2>
+                <div
+                    class="relative flex items-center w-full max-w-3xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden"
+                >
+                    <div class="pl-4 text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                    <input
+                        type="text"
+                        class="w-full px-4 py-4 text-slate-700 focus:outline-none text-lg"
+                        placeholder="Ketik kata kunci dokumen..."
+                    />
+                    <button
+                        class="bg-sky-500 hover:bg-sky-700 text-white px-8 py-4 font-semibold transition-colors"
+                        >Cari</button
+                    >
+                </div>
+            </div>
+        </div>
+
+        <main
+            class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex flex-col md:flex-row gap-8"
+        >
+            <section class="flex-grow">
+                <div class="flex justify-between items-end mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-800">
+                            Daftar Arsip Terbaru
+                        </h2>
+                        <p class="text-sm text-slate-500 mt-1">
+                            Menampilkan {semuaArsip.length} dokumen di sistem
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Grid Layout untuk Kartu dengan Thumbnail -->
+                <div
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+                >
+                    {
+                        semuaArsip.map((arsip) => {
+                            const data = arsip.data;
+                            const jenis = data.kategori_dokumen?.discriminant;
+
+                            const labelKategori =
+                                {
+                                    undangan: "Undangan",
+                                    surat_tugas: "Surat Tugas",
+                                    berkas_rapat: "Berkas Rapat",
+                                    berkas_perjadin: "Berkas Perjadin",
+                                    ba_notulen: "Berita Acara",
+                                    laporan: "Laporan",
+                                    ranpermendagri: "Ranpermendagri",
+                                }[jenis] || "Arsip";
+
+                            // Ubah link Google Drive view menjadi format preview iframe
+                            let gdriveEmbedUrl = "";
+                            if (data.tautan_utama) {
+                                const match = data.tautan_utama.match(
+                                    /\/d\/(.*?)\/|\?id=(.*?)(&|$)/,
+                                );
+                                const fileId = match
+                                    ? match[1] || match[2]
+                                    : null;
+                                if (fileId) {
+                                    gdriveEmbedUrl = `https://drive.google.com/file/d/${fileId}/preview`;
+                                }
+                            }
+
+                            return (
+                                <a
+                                    href={`/arsip/${arsip.id}`}
+                                    class="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden hover:shadow-md hover:border-sky-300 transition-all flex flex-col group cursor-pointer"
+                                >
+                                    {/* Thumbnail Kotak Preview Dokumen */}
+                                    <div class="h-48 bg-slate-100 border-b border-slate-100 relative overflow-hidden flex items-center justify-center">
+                                        {gdriveEmbedUrl ? (
+                                            <iframe
+                                                src={gdriveEmbedUrl}
+                                                class="w-full h-full pointer-events-none scale-75 origin-top"
+                                                title="Thumbnail Dokumen"
+                                            />
+                                        ) : (
+                                            <div class="text-center p-4 text-slate-400">
+                                                <i class="fa-solid fa-file-pdf text-4xl mb-2 text-red-400 group-hover:scale-110 transition-transform" />
+                                                <p class="text-xs">
+                                                    Pratinjau Dokumen
+                                                </p>
+                                            </div>
+                                        )}
+                                        <div class="absolute top-2 right-2">
+                                            <span class="bg-sky-900/80 backdrop-blur text-white text-[10px] font-bold px-2 py-1 rounded shadow">
+                                                {labelKategori}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Konten Ringkas Card */}
+                                    <div class="p-5 flex flex-col flex-grow">
+                                        {data.tanggal_upload && (
+                                            <p class="text-xs text-slate-400 mb-1">
+                                                <i class="fa-regular fa-clock mr-1" />{" "}
+                                                {data.tanggal_upload}
+                                            </p>
+                                        )}
+                                        <h3 class="text-base font-bold text-slate-900 group-hover:text-sky-600 transition-colors line-clamp-2 mb-2">
+                                            {data.title}
+                                        </h3>
+                                        <div class="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-sky-700">
+                                            <span>Lihat Detail & Berkas</span>
+                                            <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform" />
+                                        </div>
+                                    </div>
+                                </a>
+                            );
+                        })
+                    }
+                </div>
+            </section>
+        </main>
+    </body>
+</html>

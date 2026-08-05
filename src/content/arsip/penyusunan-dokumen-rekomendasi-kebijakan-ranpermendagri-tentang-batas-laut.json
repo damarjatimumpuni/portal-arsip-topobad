@@ -1,0 +1,15 @@
+{
+  "kategori_dokumen": {
+    "discriminant": "ba_notulen",
+    "value": {
+      "no_ba": "019/BAD II/VII/2026",
+      "tanggal": "2026-07-30",
+      "jenis_kegiatan": {
+        "discriminant": "non_batas"
+      }
+    }
+  },
+  "title": "Penyusunan Dokumen Rekomendasi Kebijakan Ranpermendagri tentang Batas Laut ",
+  "tanggal_upload": "2026-08-05",
+  "tautan_utama": "https://drive.google.com/file/d/1VjbVlTw0lcBdI7TRgr6uhYk8riQKOr83/view?usp=sharing"
+}
