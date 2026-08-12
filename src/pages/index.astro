@@ -2,6 +2,8 @@
 import "../styles/global.css";
 import { getCollection } from "astro:content";
 
+export const prerender = true;
+
 const semuaArsip = await getCollection("arsip");
 ---
 

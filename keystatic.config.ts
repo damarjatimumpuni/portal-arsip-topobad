@@ -55,6 +55,14 @@ function buatCabangDaerah(labelDaerah: string) {
   return branches;
 }
 
+const isLocal = import.meta.env.MODE === 'development';
+
+export default config({
+  storage: isLocal
+    ? { kind: 'local' }
+    : { kind: 'github', repo: 'damarjatimumpuni/portal-arsip-topobad' },
+  collections: {
+
 const daerahBranches1 = buatCabangDaerah('Daerah 1');
 const daerahBranches2 = buatCabangDaerah('Daerah 2 (Opsional)');
 const daerahBranches3 = buatCabangDaerah('Daerah 3 (Opsional)');
@@ -127,9 +135,9 @@ export default config({
                 {
                   // Jika Batas Daerah -> Muncul Combo Prov & Kab
                   batas_daerah: fields.object({
-                    prov_daerah_1: fields.conditional(fields.select({ label: 'Pilih Provinsi 1', options: provOptions, defaultValue: '-' }), daerahBranches1),
-                    prov_daerah_2: fields.conditional(fields.select({ label: 'Pilih Provinsi 2 (Opsional)', options: provOptions, defaultValue: '-' }), daerahBranches2),
-                    prov_daerah_3: fields.conditional(fields.select({ label: 'Pilih Provinsi 3 (Opsional)', options: provOptions, defaultValue: '-' }), daerahBranches3),
+                    prov_daerah_1: fields.conditional(fields.select({ label: 'Pilih Provinsi 1', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 1')),
+                    prov_daerah_2: fields.conditional(fields.select({ label: 'Pilih Provinsi 2 (Opsional)', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 2 (Opsional)')),
+                    prov_daerah_3: fields.conditional(fields.select({ label: 'Pilih Provinsi 3 (Opsional)', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 3 (Opsional)')),
                   }),
                   // Jika Batas Laut -> Muncul Prov saja
                   batas_laut: fields.object({
@@ -149,15 +157,15 @@ export default config({
               uraian: fields.text({ label: 'Uraian Singkat', multiline: true }),
             }),
             ranpermendagri: fields.object({
-              prov_daerah_1: fields.conditional(fields.select({ label: 'Pilih Provinsi 1', options: provOptions, defaultValue: '-' }), daerahBranches1),
-              prov_daerah_2: fields.conditional(fields.select({ label: 'Pilih Provinsi 2 (Opsional)', options: provOptions, defaultValue: '-' }), daerahBranches2),
-              prov_daerah_3: fields.conditional(fields.select({ label: 'Pilih Provinsi 3 (Opsional)', options: provOptions, defaultValue: '-' }), daerahBranches3),
+              prov_daerah_1: fields.conditional(fields.select({ label: 'Pilih Provinsi 1', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 1')),
+              prov_daerah_2: fields.conditional(fields.select({ label: 'Pilih Provinsi 2 (Opsional)', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 2 (Opsional)')),
+              prov_daerah_3: fields.conditional(fields.select({ label: 'Pilih Provinsi 3 (Opsional)', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 3 (Opsional)')),
             }),
           }
         ),
 
-        title: fields.slug({ name: { label: 'Isian Singkat', description: 'Ringkasan isi berkas' } }),
-        tanggal_upload: fields.date({ label: 'Tanggal Upload', defaultValue: { kind: 'today' } }),
+        title: fields.slug({ name: { label: 'Judul Dokumen / Nama File', description: 'Menjadi ID Unik File' } }),
+        tanggal_upload: fields.date({ label: 'Tanggal Upload ke Sistem', defaultValue: { kind: 'today' } }),
         tautan_utama: fields.url({ label: 'Tautan GDrive (Berkas Utama)' }),
         tautan_lampiran: fields.url({ label: 'Tautan Lampiran (Opsional)' }),
       },
