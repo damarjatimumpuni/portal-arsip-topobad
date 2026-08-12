@@ -59,7 +59,7 @@ const daerahBranches1 = buatCabangDaerah('Daerah 1');
 const daerahBranches2 = buatCabangDaerah('Daerah 2 (Opsional)');
 const daerahBranches3 = buatCabangDaerah('Daerah 3 (Opsional)');
 
-const isLocal = import.meta.env.MODE === 'development;
+const isLocal = import.meta.env.MODE === 'development';
 
 export default config({
   storage: isLocal
