@@ -62,18 +62,6 @@ export default config({
     ? { kind: 'local' }
     : { kind: 'github', repo: 'damarjatimumpuni/portal-arsip-topobad' },
   collections: {
-
-const daerahBranches1 = buatCabangDaerah('Daerah 1');
-const daerahBranches2 = buatCabangDaerah('Daerah 2 (Opsional)');
-const daerahBranches3 = buatCabangDaerah('Daerah 3 (Opsional)');
-
-const isLocal = import.meta.env.MODE === 'development';
-
-export default config({
-  storage: isLocal
-    ? { kind: 'local' }
-    : { kind: 'github', repo: 'damarjatimumpuni/portal-arsip-topobad' },
-  collections: {
     arsip: collection({
       label: 'Dokumen Arsip',
       slugField: 'title',
@@ -151,6 +139,7 @@ export default config({
               ),
               // -------------------------------------------
 
+              isian_singkat: fields.text({ label: 'Isian Singkat', multiline: true }),
             }),
             laporan: fields.object({
               tanggal: fields.date({ label: 'Tanggal Laporan' }),
