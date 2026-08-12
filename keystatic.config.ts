@@ -34,7 +34,9 @@ Object.keys(dataWilayah).forEach(prov => {
   provOptions.push({ label: prov, value: prov });
 });
 
-// 2. Fungsi pembuat cabang Daerah
+// 2. Fungsi pembuat cabang Daerah (DIPERBARUI)
+// Kita harus mengembalikan "Record" berisi form field baru setiap kali fungsi ini dipanggil
+// agar tidak ada duplikasi ID form di mata mesin React/Keystatic.
 function buatCabangDaerah(labelDaerah: string) {
   const branches: Record<string, any> = {
     '-': fields.select({
@@ -122,6 +124,8 @@ export default config({
                 }),
                 {
                   // Jika Batas Daerah -> Muncul Combo Prov & Kab
+                  // KUNCI SOLUSI: Kita panggil fungsi buatCabangDaerah() secara langsung di sini
+                  // agar Keystatic tidak kebingungan dengan referensi memory yang sama.
                   batas_daerah: fields.object({
                     prov_daerah_1: fields.conditional(fields.select({ label: 'Pilih Provinsi 1', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 1')),
                     prov_daerah_2: fields.conditional(fields.select({ label: 'Pilih Provinsi 2 (Opsional)', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 2 (Opsional)')),
@@ -146,6 +150,7 @@ export default config({
               uraian: fields.text({ label: 'Uraian Singkat', multiline: true }),
             }),
             ranpermendagri: fields.object({
+              // KUNCI SOLUSI: Panggil ulang fungsi buatCabangDaerah()
               prov_daerah_1: fields.conditional(fields.select({ label: 'Pilih Provinsi 1', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 1')),
               prov_daerah_2: fields.conditional(fields.select({ label: 'Pilih Provinsi 2 (Opsional)', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 2 (Opsional)')),
               prov_daerah_3: fields.conditional(fields.select({ label: 'Pilih Provinsi 3 (Opsional)', options: provOptions, defaultValue: '-' }), buatCabangDaerah('Daerah 3 (Opsional)')),
