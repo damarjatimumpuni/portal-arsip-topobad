@@ -13,10 +13,8 @@ export default defineConfig({
     plugins: [tailwindcss()]
   },
 
-  // Perhatikan tanda koma di ujung baris bawah ini:
-  integrations: [react(), markdoc(), keystatic()],
-
   output: 'server',
   adapter: vercel(),
-  integrations: [keystatic()],
+  // Urutan penting: react() harus terdaftar sebelum keystatic()
+  integrations: [react(), markdoc(), keystatic()],
 });
