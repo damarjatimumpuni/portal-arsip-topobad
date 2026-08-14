@@ -1,0 +1,13 @@
+{
+  "name": "ai-router",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Router AI lokal: distribusi tugas ke GLM, deepseek, dan Gemini",
+  "scripts": {
+    "router": "node src/cli.mjs",
+    "test": "node scripts/test-all-models.mjs",
+    "test:gemini": "node scripts/test-gemini.mjs",
+    "test:glm": "node scripts/test-maia-glm.mjs"
+  }
+}
