@@ -42,13 +42,29 @@ function pickCandidates(classification, opts = {}) {
     .sort((a, b) => a.prio[role] - b.prio[role]);
 }
 
+// Gemini tidak punya array messages seperti OpenAI — riwayat digabung jadi teks.
+function buildGeminiParts(history, prompt, parts) {
+  if (history.length === 0) return parts;
+
+  const lines = history.map((m) => {
+    const who =
+      m.role === 'system' ? 'Ringkasan' : m.role === 'assistant' ? 'AI' : 'User';
+    return `${who}: ${m.content}`;
+  });
+  const text = `Riwayat percakapan:\n${lines.join('\n')}\n\nPertanyaan: ${prompt}`;
+
+  const imagePart = parts.find((p) => p.inline_data);
+  return imagePart ? [{ text }, imagePart] : [{ text }];
+}
+
 /**
  * @param {string} prompt
- * @param {{ modelId?: string, imageData?: string, imageMime?: string, maxTokens?: number, multimodal?: boolean }} [opts]
+ * @param {{ modelId?: string, imageData?: string, imageMime?: string, maxTokens?: number, multimodal?: boolean, history?: {role: string, content: string}[] }} [opts]
  */
 export async function routeTask(prompt, opts = {}) {
   const classification = classifyTask(prompt, opts);
   const candidates = pickCandidates(classification, opts);
+  const history = Array.isArray(opts.history) ? opts.history : [];
 
   const parts = opts.imageData
     ? [
@@ -71,11 +87,11 @@ export async function routeTask(prompt, opts = {}) {
       const result =
         model.provider === 'maia'
           ? await callMaia(model.name, config, {
-              messages: [{ role: 'user', content: prompt }],
+              messages: [...history, { role: 'user', content: prompt }],
               maxTokens: opts.maxTokens ?? 4096,
             })
           : await callGemini(model.name, config, {
-              parts,
+              parts: buildGeminiParts(history, prompt, parts),
               maxTokens: opts.maxTokens ?? 4096,
             });
 

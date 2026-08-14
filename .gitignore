@@ -17,6 +17,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# ai-router local session memory
+ai-router/memories/
+
 # macOS-specific files
 .DS_Store
 
